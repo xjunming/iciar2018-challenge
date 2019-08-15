@@ -90,12 +90,12 @@ val_type = []
 for f in files:
     val_type.extend(read_file(f))
 train_dir = get_path()
-try:
+if len(argv)==1:
     train_0 = os.path.sep.join([train_dir, 'Normal'])
     train_1 = os.path.sep.join([train_dir, 'Benign'])
     train_2 = os.path.sep.join([train_dir, 'Insitu'])
     train_3 = os.path.sep.join([train_dir, 'Invasive'])
-except:
+else:
     train_0 = train_dir + '/Normal/'
     train_1 = train_dir + '/Benign/'
     train_2 = train_dir + '/Insitu/'
