@@ -90,10 +90,16 @@ val_type = []
 for f in files:
     val_type.extend(read_file(f))
 train_dir = get_path()
-train_0 = os.path.sep.join([train_dir, 'Normal'])
-train_1 = os.path.sep.join([train_dir, 'Benign'])
-train_2 = os.path.sep.join([train_dir, 'Insitu'])
-train_3 = os.path.sep.join([train_dir, 'Invasive'])
+try:
+    train_0 = os.path.sep.join([train_dir, 'Normal'])
+    train_1 = os.path.sep.join([train_dir, 'Benign'])
+    train_2 = os.path.sep.join([train_dir, 'Insitu'])
+    train_3 = os.path.sep.join([train_dir, 'Invasive'])
+except:
+    train_0 = train_dir + '/Normal/'
+    train_1 = train_dir + '/Benign/'
+    train_2 = train_dir + '/Insitu/'
+    train_3 = train_dir + '/Invasive/'
 
 train_paths_0 = list(paths.list_images(train_0))
 train_paths_1 = list(paths.list_images(train_1))
