@@ -39,7 +39,7 @@ def get_patch(file, result_dir):
                         abs(patch[:, :, 2] - 107) >= 93)
             if np.sum(rgb_s) <= (step * step) * 0.6:
                 i = i + 1
-                io.imsave(result_dir + '/' + f_name + '_' + str(i) + '.png', patch)
+                io.imsave('/' + f_name + '_' + str(i) + '.png', patch)
     return
 
 def get_dataset(paths, save_dir):
@@ -90,7 +90,7 @@ val_type = []
 for f in files:
     val_type.extend(read_file(f))
 train_dir = get_path()
-if len(argv)==1:
+if len(sys.argv)==1:
     train_0 = os.path.sep.join([train_dir, 'Normal'])
     train_1 = os.path.sep.join([train_dir, 'Benign'])
     train_2 = os.path.sep.join([train_dir, 'Insitu'])
