@@ -39,7 +39,8 @@ def get_patch(file, result_dir):
                         abs(patch[:, :, 2] - 107) >= 93)
             if np.sum(rgb_s) <= (step * step) * 0.6:
                 i = i + 1
-                io.imsave('/' + f_name + '_' + str(i) + '.png', patch)
+                print(result_dir + '/' + '_' + str(i) + '.png')
+                io.imsave(result_dir + '/' + '_' + str(i) + '.png', patch)
     return
 
 def get_dataset(paths, save_dir):
@@ -95,27 +96,33 @@ if len(sys.argv)==1:
     train_1 = os.path.sep.join([train_dir, 'Benign'])
     train_2 = os.path.sep.join([train_dir, 'Insitu'])
     train_3 = os.path.sep.join([train_dir, 'Invasive'])
+#    print(train_0)
 else:
     train_0 = train_dir + '/Normal/'
     train_1 = train_dir + '/Benign/'
     train_2 = train_dir + '/Insitu/'
     train_3 = train_dir + '/Invasive/'
+#    print(train_0)
 
 train_paths_0 = list(paths.list_images(train_0))
 train_paths_1 = list(paths.list_images(train_1))
 train_paths_2 = list(paths.list_images(train_2))
 train_paths_3 = list(paths.list_images(train_3))
 
-train_paths_0 = [i for i in train_paths_0 if i.split('\\')[-1] not in val_type]
-test_paths_0 = [i for i in train_paths_0 if i.split('\\')[-1] in val_type]
-train_paths_1 = [i for i in train_paths_1 if i.split('\\')[-1] not in val_type]
-test_paths_1 = [i for i in train_paths_1 if i.split('\\')[-1] in val_type]
-train_paths_2 = [i for i in train_paths_2 if i.split('\\')[-1] not in val_type]
-test_paths_2 = [i for i in train_paths_2 if i.split('\\')[-1] in val_type]
-train_paths_3 = [i for i in train_paths_3 if i.split('\\')[-1] not in val_type]
-test_paths_3 = [i for i in train_paths_3 if i.split('\\')[-1] in val_type]
+test_paths_0 = [i for i in train_paths_0 if i.split(r'/')[-1] in val_type]
+train_paths_0 = [i for i in train_paths_0 if i.split(r'/')[-1] not in val_type]
+test_paths_1 = [i for i in train_paths_1 if i.split(r'/')[-1] in val_type]
+train_paths_1 = [i for i in train_paths_1 if i.split(r'/')[-1] not in val_type]
+test_paths_2 = [i for i in train_paths_2 if i.split(r'/')[-1] in val_type]
+train_paths_2 = [i for i in train_paths_2 if i.split(r'/')[-1] not in val_type]
+test_paths_3 = [i for i in train_paths_3 if i.split(r'/')[-1] in val_type]
+train_paths_3 = [i for i in train_paths_3 if i.split(r'/')[-1] not in val_type]
+
+print(len(train_paths_0),len(test_paths_0))
+# print([i.split('/')[-1] for i in train_paths_0])
 
 # train data
+# print('train_path_0: %s \ntrain_class0_dir: %s'%(train_paths_0,train_class0_dir))
 get_dataset(train_paths_0, train_class0_dir)
 get_dataset(train_paths_1, train_class1_dir)
 get_dataset(train_paths_2, train_class2_dir)
