@@ -34,6 +34,8 @@ class data_preprocessing:
                  aug_num=2):
         """
         对原数据集进行截图、颜色增强，并保存为自己的数据集。
+        由于我开启了多进程，因此调用时需要在if __name__ == '__main__':里面运行，
+        若果你不想开启多线程，你可以在line 144~151进行修改，具体可以参考./demo/data_processing_demo.py
         # Arguments
             img_list: 图像的文件路径
             step: 截图移动的步长，默认512
@@ -90,10 +92,6 @@ class data_preprocessing:
         :param test_data: 是否为测试集数据，若为True，则不进行颜色增强
         :return: 最后保存截图及其颜色增强的图片
         """
-        if ".png" not in file:
-            default_channels = 3
-        else:
-            default_channels = 4
         f = re.split(r'/|\\', file)[-1]
         f_name = f.split('.')[-2]
         img = Image.open(file)
@@ -111,8 +109,7 @@ class data_preprocessing:
                         abs(patch[:, :, 2] - 107) >= 93)
                 if np.sum(rgb_s) >= (self.patch_size * self.patch_size) * 0.6:
                     continue
-                if patch.shape != (self.patch_size, self.patch_size, default_channels):
-                    print(patch.shape)
+                if patch.shape != (self.patch_size, self.patch_size, 3):
                     continue
                 elif test_data:
                     io.imsave(result_dir + '/' + f_name + '_' + str(x) + '_' + str(y) + '_.png', patch)
@@ -139,11 +136,16 @@ class data_preprocessing:
             os.mkdir(save_dir)
         print('\nsaving in %s'%save_dir)
         start_time = time.asctime(time.localtime(time.time()))
+
+        # 开启多进程
         with concurrent.futures.ProcessPoolExecutor(30) as executor:
              for img in img_list:
                  executor.submit(self.get_patch, img, save_dir, test_data)
+
+        # 不开启多进程
         # for i in tqdm(img_list):
         #     self.get_patch(i, save_dir, test_data=test_data)
+
         print('\nstart at %s'%start_time)
         print('\nend at %s'%time.asctime(time.localtime(time.time())))
 
