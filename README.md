@@ -51,7 +51,7 @@ The dataset contains a total of 400 microscopy images, distributed as follows:
 - *in situ* carcinoma: 100
 - Invasive carcinoma: 100
 
-2、**Part B** :10张有标注的svs图片，图片大小在500M以上：![A08_thumb](E:\biototem\iciar2018-challenge\pics\A08_thumb.png)
+2、**Part B** :10张有标注的svs图片，图片大小在500M以上：![A08_thumb](.\pics\A08_thumb.png)
 
 真实场景测试数据集：
 
