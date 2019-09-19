@@ -131,7 +131,7 @@ st->op1->op2->op3->e
 
 注：具体参数定义为
 
-step: 截图步长； patch size：截图大小； scale range：颜色变换范围为[1.08-scale, 1.08+scale]； stain channels：染色通道； aug num：颜色增强数量。
+step: 截图步长； patch size:截图大小； scale range:颜色变换范围为[1.08-scale, 1.08+scale]； stain channels:染色通道； aug num:颜色增强数量。
 
 
 
@@ -170,7 +170,7 @@ ResNet已经在很多分类问题上得到很好的应用，因此我们使用Re
 
 注：具体参数定义为
 
-模型：主要的模型框架， epoch：训练的回合， lr：学习率， batch size：每次计算loss的batch，optimizers：优化器，loss fun：选用的损失函数， resize：最终输入到的模型的图片大小。
+模型:主要的模型框架， epoch:训练的回合， lr:学习率， batch size:每次计算loss的batch，optimizers:优化器，loss fun:选用的损失函数， resize:最终输入到的模型的图片大小。
 
 * 为什么要让lr为0.0001，batch size为128：经过我多次实验，如果设置为大于0.0001，batch size小于128，训练了7、8个epoch后，loss依然停留在大于1，而在之后loss出现波动情况。这个要感谢世伟，这个参数是世伟指导的。
 * 为什么要自定义loss funtion：为了提高Invasive(乳腺癌最坏的情况)的召回率，尽可能地检测到Invasive，波哥写了一个自定义的loss funtion。
