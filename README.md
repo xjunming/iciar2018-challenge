@@ -1,6 +1,6 @@
 # iciar2018-challenge
 
-
+方法介绍与[代码说明](#code)
 
 ## 项目背景和必要性
 
@@ -16,7 +16,7 @@
 
 1、**Part A**: 显微镜图：
 
-图像分为四类，正常组织，良性病变，原位癌和浸润性癌；亦可分为癌和非癌两类。根据每个图像中的主要癌症类型，将显微镜图像标记为正常，良性，原位癌或浸润性癌。注释由两位医学专家和图像执行，如果存在分歧则被丢弃。
+图像分为四类，正常组织，良性病变，原位癌和浸润性癌；亦可分为癌和非癌两类。根据每个图像中的主要癌症类型，将显微镜图像标记为正常，良性，原位癌或浸润性癌。标记由两位医学专家和图像执行，如果存在分歧则被丢弃。
 
 <table id="table_dataset">
 	<tbody>
@@ -106,7 +106,6 @@ st->op1->op2->op3->e
 
 - 数据集划分：
      统计400张tif图的h, s, v的均值及其方差，用其作为特征进行k-means聚类，最后把原数据集分为了两个，一个颜色较为鲜艳高亮度，另一个较为低亮度低饱和度，将颜色较为鲜艳的分为测试集，剩余的图片则为训练集。划分的数据集分布如下表所示：
-
 |       | **Normal** | **Benign** | **Insitu** | **Invasive** |
 | ----- | ---------- | ---------- | ---------- | ------------ |
 | Train | 61         | 84         | 64         | 68           |
@@ -211,6 +210,61 @@ ResNet已经在很多分类问题上得到很好的应用，因此我们使用Re
 ## 总结
 
 
+
+## 代码说明<div id="code"></div>
+
+本项目主要有三个主程序`data_preprocessing.py`, `model.py`, `cnn_predict_svs.py`：
+
+`data_preprocessing.py`：进行切图和颜色增强的代码；
+
+`model.py`：训练模型的代码；
+
+`cnn_predict_svs.py`：对*.svs大图进行预测。
+
+### 目录结构
+
+```
+iciar2018-challenge
+│   README.md
+│   data_preprocessing.py
+│   model.py
+│   cnn_predict_svs.py
+│
+└───utils
+│   │   generators.py
+│   │   resnet.py
+│   │   resnet.py
+│   │   resnet.py
+│   
+└───demo
+│   data_processing_demo.py
+│   file022.txt
+│   
+└───data
+│   └───train
+│   │   Normal
+│   │   ...
+│   └───test
+│   │   Normal
+│   │   ...
+│   
+└───pics
+│   A08_thumb.png
+│   ...
+```
+
+
+
+### how to run
+
+* 下载整个项目[代码](https://github.com/xjunming/iciar2018-challenge)
+
+* 在Terminal终端运行`virtualenv venv`，创建一个虚拟环境
+* `source venv/bin/activate`，激活虚拟环境
+* `pip install -r requirement.txt`，安装相关依赖包
+* `python data_preprocessing.py`，进行数据预处理
+* `python model.py`，训练模型(1080ti大概运行了 小时)
+* `python cnn_predict_svs.py`，对大图进行预测
 
 
 
