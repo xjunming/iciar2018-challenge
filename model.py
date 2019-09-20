@@ -18,8 +18,8 @@ import tensorflow as tf
 num_epochs = 50
 init_lr = 1e-4
 bs = 128
-val_dir = '../data/dataset_step_512_patch_512_scale_0.6_channels_hsv_aug_2/test/'
-train_dir = '../data/dataset_step_512_patch_512_scale_0.6_channels_hsv_aug_2/train/'
+val_dir = './data/dataset_step_512_patch_512_scale_0.6_channels_hsv_aug_2/test/'
+train_dir = './data/dataset_step_512_patch_512_scale_0.6_channels_hsv_aug_2/train/'
 model_name = 'resnet50'
 
 os.environ["CUDA_VISIBLE_DEVICES"] = '1'
