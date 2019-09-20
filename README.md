@@ -100,12 +100,13 @@ st->op1->op2->op3->e
 
 ### 数据预处理
 
-数据预处理在深度学习中尤为重要，数据集往往是决定模型上限的，而模型既是不停地靠近模型。
+数据预处理在深度学习中尤为重要，数据集往往是决定模型上限的，而模型则是不停地靠近模型。
 
-数据预处主要有两部分，一是对原数据集的划分，二是采集图片并进行染色增强。在数据集的划分上，为了提高模型的泛化能力，把颜色鲜艳的作为测试集，若模型在val_loss或val_acc表现较好，一定程度上可以说明模型具有一定的泛化能力。在原图片切割方面，根据数据集的分析可知，512*512大小的图片可以很好地表现特征，另一方面，为了降低颜色对cnn模型的影响，进一步提高泛化能力，因此再对切割后的图片进行染色变换，变换的幅度较大，变换通道为h, s, v三个通道。
+数据预处主要有两部分，一是对原数据集的划分，二是采集图片并进行染色增强。在数据集的划分上，为了提高模型的泛化能力，防止信息泄漏，把颜色鲜艳的作为测试集，若模型在val_loss或val_acc表现较好，一定程度上可以说明模型具有一定的泛化能力。在原图片切割方面，根据数据集的分析可知，512*512大小的图片可以很好地表现特征，另一方面，为了降低颜色对cnn模型的影响，进一步提高泛化能力，因此再对切割后的图片进行染色变换，变换的幅度较大，变换通道为h, s, v三个通道。
 
 - 数据集划分：
      统计400张tif图的h, s, v的均值及其方差，用其作为特征进行k-means聚类，最后把原数据集分为了两个，一个颜色较为鲜艳高亮度，另一个较为低亮度低饱和度，将颜色较为鲜艳的分为测试集，剩余的图片则为训练集。划分的数据集分布如下表所示：
+
 |       | **Normal** | **Benign** | **Insitu** | **Invasive** |
 | ----- | ---------- | ---------- | ---------- | ------------ |
 | Train | 61         | 84         | 64         | 68           |
@@ -172,44 +173,40 @@ ResNet已经在很多分类问题上得到很好的应用，因此我们使用Re
 
 模型:主要的模型框架， epoch:训练的回合， lr:学习率， batch size:每次计算loss的batch，optimizers:优化器，loss fun:选用的损失函数， resize:最终输入到的模型的图片大小。
 
-* 为什么要让lr为0.0001，batch size为128：经过我多次实验，如果设置为大于0.0001，batch size小于128，训练了7、8个epoch后，loss依然停留在大于1，而在之后loss出现波动情况。这个要感谢世伟，这个参数是世伟指导的。
-* 为什么要自定义loss funtion：为了提高Invasive(乳腺癌最坏的情况)的召回率，尽可能地检测到Invasive，波哥写了一个自定义的loss funtion。
+* 为什么要让lr为0.0001，batch size为128：经过多次实验，如果设置为大于0.0001，batch size小于128，训练了7、8个epoch后，loss依然停留在大于1，而在之后loss出现波动情况。
+* 为什么要自定义loss funtion：为了提高*Invasive* (乳腺癌最坏的情况)的召回率，尽可能地检测到*Invasive*，波哥写了一个自定义的loss funtion。
 
 
 
 ## 结果分析
 
-### 混淆矩阵(confusion matrix)(测试集上)
+### 混淆矩阵(confusion matrix)(测试集上)（代码可能有问题）
 
 | test data<br/>(model ResNet50) |          |          |        |        |        |
 | ---------- | -------- | -------- | ------ | ------ | ------ |
 |            |          | Predict  |        |        |        |
 |            |          | Invasive | Insitu | Benign | Normal |
-| TRUE       | Invasive |       |     |     |     |
-|            | Insitu     |       |       |     |      |
-|            | Benign     |        |        |     |      |
-|            | Normal     |       |       |     |     |
+| TRUE       | Invasive | 130 | 118 | 7 | 71 |
+|            | Insitu     | 55 | 88 | 29 | 96 |
+|            | Benign     | 20 | 4 | 11 | 131 |
+|            | Normal     | 15 | 58 | 18 | 204 |
 
 ### 预测精确率
 
 | 实验 | 1 |
 | ---- | -------- |
 | 模型 | ResNet50 |
-| accuracy |   |
-| precision |   |
-| recall |      |
-| F1-score |       |
-| precision(Invasive) |     |
-| recall(Invasive) |   |
-| F1-score(Invasive) |  |
+| accuracy | 0.410 |
+| precision | 0.373 |
+| recall | 0.371 |
+| F1-score | 0.372 |
 
-注：precision(Invasive)、recall(Invasive)、F1-score(Invasive)的计算方式就是分为(Invasive，非 Invasive)画的混淆矩阵。
 
 
 
 ## 总结
 
-
+在没有刻意地模仿验证集的情况下，第三次实验相对成功，可以确认的是，不同的数据集分类，会有很大的不同。
 
 ## 代码说明<div id="code"></div>
 
@@ -232,9 +229,8 @@ iciar2018-challenge
 │
 └───utils
 │   │   generators.py
-│   │   resnet.py
-│   │   resnet.py
-│   │   resnet.py
+│   │   class4_preview.py
+│   │   get_colormap_img.py
 │   
 └───demo
 │   data_processing_demo.py
@@ -263,11 +259,29 @@ iciar2018-challenge
 * `source venv/bin/activate`，激活虚拟环境
 * `pip install -r requirement.txt`，安装相关依赖包
 * `python data_preprocessing.py`，进行数据预处理
-* `python model.py`，训练模型(1080ti大概运行了 小时)
+* `python model.py`，训练模型(在1080ti的速度大概1小时/epoch)
 * `python cnn_predict_svs.py`，对大图进行预测
 
-
+注意，运行了`data_preprocessing.py`之后要记得把文件夹名字变成0、1、2、3，使其分别对应Normal、Benign、In Situ、Invasive。
 
 ## 附录
 
-(10张svs预测结果)
+(10张svs预测结果)![A03_resnet50_colormap](./pics/coloermap/A03_resnet50_colormap.png)
+
+![A04_resnet50_colormap](./pics/coloermap/A04_resnet50_colormap.png)
+
+![A05_resnet50_colormap](./pics/coloermap/A05_resnet50_colormap.png)
+
+![A06_resnet50_colormap](./pics/coloermap/A06_resnet50_colormap.png)
+
+![A07_resnet50_colormap](./pics/coloermap/A07_resnet50_colormap.png)
+
+![A08_resnet50_colormap](./pics/coloermap/A08_resnet50_colormap.png)
+
+![A09_resnet50_colormap](./pics/coloermap/A09_resnet50_colormap.png)
+
+![A10_resnet50_colormap](./pics/coloermap/A10_resnet50_colormap.png)
+
+![A01_resnet50_colormap](./pics/coloermap/A01_resnet50_colormap.png)
+
+![A02_resnet50_colormap](./pics/coloermap/A02_resnet50_colormap.png)
